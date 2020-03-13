@@ -11,5 +11,5 @@
   if you don't, install them, and start up the server.
  
 3. Go to the link that is returned in the console: http://localhost:8000/< your_graphql_path >
-- NOTE: I forgot to add the slashes after 'http' in the console long and I am writing the README after the fact.
+- NOTE: I forgot to add the slashes after 'http' in the console log and I am writing the README after the fact.
   
