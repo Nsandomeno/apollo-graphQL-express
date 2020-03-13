@@ -1,65 +1,24 @@
-
-// DEPENDENCIES: 
-// - apollo-server-express
-// - graphql-tools
-// - graphql
-// - express
-// - body-parser
-
-
-// import express
 const express = require('express')
-// import body-parser
-const bodyParser = require('body-parser')
-// import what is needed from apollo
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
-// graphql-tools
-const { makeExecutableSchema } = require('graphql-tools')
+const { ApolloServer, gql } = require('apollo-server-express')
 
-// some fake data
-const books = [
-    {
-        title: "Harry Potter and the Sorcerer's stone",
-        author: "J.K. Rowling",
-    },
-    {
-        title: "Jurassic Park",
-        author: "Michael Crichton",
-    },
-]
-
-// The GraphQL Schema in string form
-const typeDefs = `
-    type Query { books: [Book]}
-
-    type Book { 
-        title: String,
-        author: String
-        }
+// Construct a Schema, using GraphQL schema language
+const typeDefs = gql`
+type Query {
+    hello: String
+}
 `;
-// *** end GraphQL Schema ***
 
-// Resolver Functions
+// Provide a resolver function for your schema fields
 const resolvers = {
-    Query: { books: () => books },
+    Query: {
+        hello: () => 'Hello World!',
+    },
 };
 
-// Bind typeDefs to the resolvers to create the GraphQL Schema
-const schema = makeExecutableSchema({
-    typeDefs,
-    resolvers
-})
+const server = new ApolloServer({ typeDefs, resolvers });
 
-// Initialize Express Server
-const server = express()
+const app = express();
+server.applyMiddleware({ app })
 
-// Make GraphQL endpoints
-server.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
-
-// GraphiQL - a visual editor for queries
-server.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
-
-// Start the Server
-server.listen(8000, () => {
-    console.log('Go to http://localhost:8000/graphiql to run queries.')
-})
+app.listen({ port:8000 }, () => 
+console.log(`Server ready at http:localhost:8000${server.graphqlPath}`))
